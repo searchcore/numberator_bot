@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
 from ...database.phrases.main import get_phrase
+from ...database.models.user import user_set_rank, user_get_rank
 
 import random
 from datetime import datetime
@@ -10,7 +11,7 @@ from datetime import datetime
 import json
 
 N_SECONDS = 3
-N_QUESTIONS = 20
+N_QUESTIONS = 5
 phrases = None
 
 def register_handlers(dp: Dispatcher):
@@ -38,7 +39,7 @@ async def cmd_game_mul(message: types.Message, state: FSMContext):
         for phrase in get_phrase('misc__nan'):
             await message.answer(phrase)
         return
-    
+
     u_data = await state.get_data()
 
     time_elapsed = abs((u_data['last_answ_timestep'] - datetime.now()).total_seconds())
@@ -58,6 +59,11 @@ async def cmd_game_mul(message: types.Message, state: FSMContext):
         if u_data['q_number'] >= N_QUESTIONS:
             for phrase in get_phrase('misc__game_end'):
                 await message.answer(phrase)
+
+            uid = message.from_user.id
+            uname = message.from_user.username
+
+            add_rank(uid, uname, 1)
             await state.finish()
             return
 
@@ -83,3 +89,7 @@ def gen_question():
     question = f'{x} + {y}'
     answer = x+y
     return question, answer
+
+def add_rank(uid, name, rank_step):
+    rank = user_get_rank(uid)
+    user_set_rank(uid, name, rank + rank_step)
