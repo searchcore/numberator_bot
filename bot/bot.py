@@ -5,8 +5,8 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 from .misc.env import get_token_from_env
 
-from .handlers.game_mul.game_mul import register_handlers as game_mul_register_handlers
-from .handlers.game_add.game_add import register_handlers as game_add_register_handlers
+from .handlers.games.mul import register_handlers as game_mul_register_handlers
+from .handlers.games.add import register_handlers as game_add_register_handlers
 
 from .handlers.common import register_handlers as common_register_handlers
 
