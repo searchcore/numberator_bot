@@ -9,7 +9,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
     await state.finish()
     await message.answer('Явился? Давай, садись.')
     await message.answer('Та-а-ак... Ты что исправлять-то пришел?')
-    await message.answer('/mul - тренажер таблицы умножения\nСначала ознакомьтесь с правилами:\n/info_название_режима\nПример:\n/info_mul')
+    await message.answer('/mul - тренажер таблицы умножения\n/add - тренажер сложения\nСначала ознакомьтесь с правилами:\n/info_название_режима\nПример:\n/info_mul')
 
 async def cmd_cancel(message: types.Message, state: FSMContext):
     await state.finish()
