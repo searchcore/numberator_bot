@@ -11,7 +11,7 @@ from datetime import datetime
 import json
 
 N_SECONDS = 3
-N_QUESTIONS = 5
+N_QUESTIONS = 20
 phrases = None
 
 def register_handlers(dp: Dispatcher):

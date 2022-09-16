@@ -8,7 +8,7 @@ import random
 from datetime import datetime
 
 N_SECONDS = 3
-N_QUESTIONS = 5
+N_QUESTIONS = 20
 
 def register_handlers(dp: Dispatcher):
     dp.register_message_handler(cmd_info_mul, commands="info_mul", state='*')
