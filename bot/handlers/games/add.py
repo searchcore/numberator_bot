@@ -8,10 +8,14 @@ from ...database.models.user import user_set_rank, user_get_rank
 import random
 from datetime import datetime
 
-N_SECONDS = 3
-N_QUESTIONS = 20
+def init_handlers(dp: Dispatcher, cfg):
+    global N_SECONDS, N_QUESTIONS, RANDOM_PHRASE_CHANCE, RANK_AMOUNT
 
-def register_handlers(dp: Dispatcher):
+    N_SECONDS               = int(cfg['SecondsToAnswer'])
+    N_QUESTIONS             = int(cfg['QuestionsNumber'])
+    RANDOM_PHRASE_CHANCE    = int(cfg['RandomPhraseChance'])
+    RANK_AMOUNT             = int(cfg['RankAmount'])
+
     dp.register_message_handler(cmd_info_mul, commands="info_add", state='*')
     dp.register_message_handler(cmd_game_start, commands="add", state='*')
     dp.register_message_handler(cmd_game_mul, state=GameAddStates.game_in_progress)
@@ -60,11 +64,11 @@ async def cmd_game_mul(message: types.Message, state: FSMContext):
             uid = message.from_user.id
             uname = message.from_user.username
 
-            add_rank(uid, uname, 1)
+            add_rank(uid, uname, RANK_AMOUNT)
             await state.finish()
             return
 
-        if random.randint(0, 3) == 3:
+        if random.randint(0, 100) < RANDOM_PHRASE_CHANCE:
             for phrase in get_phrase('misc__rand_action_phr'):
                 await message.answer(phrase)
 

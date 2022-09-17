@@ -3,14 +3,19 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
 from ...database.phrases.main import get_phrase
+from ...database.models.user import user_set_rank, user_get_rank
 
 import random
 from datetime import datetime
 
-N_SECONDS = 3
-N_QUESTIONS = 20
+def init_handlers(dp: Dispatcher, cfg):
+    global N_SECONDS, N_QUESTIONS, RANDOM_PHRASE_CHANCE, RANK_AMOUNT
 
-def register_handlers(dp: Dispatcher):
+    N_SECONDS               = int(cfg['SecondsToAnswer'])
+    N_QUESTIONS             = int(cfg['QuestionsNumber'])
+    RANDOM_PHRASE_CHANCE    = int(cfg['RandomPhraseChance'])
+    RANK_AMOUNT             = int(cfg['RankAmount'])
+
     dp.register_message_handler(cmd_info_mul, commands="info_mul", state='*')
     dp.register_message_handler(cmd_game_start, commands="mul", state='*')
     dp.register_message_handler(cmd_game_mul, state=GameMulStates.game_in_progress)
@@ -55,8 +60,18 @@ async def cmd_game_mul(message: types.Message, state: FSMContext):
         if u_data['q_number'] >= N_QUESTIONS:
             for phrase in get_phrase('misc__game_end'):
                 await message.answer(phrase)
+            
+            uid = message.from_user.id
+            uname = message.from_user.username
+
+            add_rank(uid, uname, RANK_AMOUNT)
+
             await state.finish()
             return
+
+        if random.randint(0, 100) < RANDOM_PHRASE_CHANCE:
+            for phrase in get_phrase('misc__rand_action_phr'):
+                await message.answer(phrase)
 
         q, a = gen_question()
         await state.update_data(expected_answer=a)
@@ -76,3 +91,7 @@ def gen_question():
     question = f'{x} ∙ {y}'
     answer = x*y
     return question, answer
+
+def add_rank(uid, name, rank_step):
+    rank = user_get_rank(uid)
+    user_set_rank(uid, name, rank + rank_step)

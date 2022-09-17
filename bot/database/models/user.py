@@ -3,9 +3,15 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 
+USERS_IN_RANKING = 10
+
 db = SqliteDatabase(BASE_DIR/'users.db')
 
-def init_users_table():
+def init_users_db(cfg):
+    global USERS_IN_RANKING
+    USERS_IN_RANKING = int(cfg['UsersAmountInList'])
+
+def drop_users_table():
     """!DROPS! and inits current users table."""
     SchemaManager(Users, db).drop_table()
     Users.create_table()
@@ -27,7 +33,7 @@ def user_get_rank(uid):
     return u.get().rank
 
 def get_top_ranks():
-    top = Users.select().order_by(Users.rank.desc()).limit(10)
+    top = Users.select().order_by(Users.rank.desc()).limit(USERS_IN_RANKING)
     
     tops = [(u.name, u.rank) for u in top]
 
@@ -42,4 +48,4 @@ class Users(Model):
         database = db
 
 if __name__ == '__main__':
-    init_users_table()
+    drop_users_table()

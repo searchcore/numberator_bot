@@ -2,9 +2,9 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 
 from ..database.models.user import get_top_ranks
-from ..database.phrases import get_phrase
+from ..database.phrases.main import get_phrase
 
-def register_handlers(dp: Dispatcher):
+def init_handlers(dp: Dispatcher):
     dp.register_message_handler(cmd_start, commands="start", state="*")
     dp.register_message_handler(cmd_cancel, commands="cancel", state="*")
     dp.register_message_handler(cmd_rank, commands="rank", state="*")

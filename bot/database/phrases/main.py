@@ -51,7 +51,7 @@ def init_table_from_json(path: str):
     
     print('OK.')
     
-def get_phrase(name : str, cache=False):
+def get_phrase(name: str, cache=False):
     """Returns phrases list from database with name 'name'.\
     If database contains several entries with same name, returns random one."""
     if cache:
