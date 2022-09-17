@@ -8,11 +8,8 @@ from ...database.models.user import user_set_rank, user_get_rank
 import random
 from datetime import datetime
 
-import json
-
 N_SECONDS = 3
 N_QUESTIONS = 20
-phrases = None
 
 def register_handlers(dp: Dispatcher):
     dp.register_message_handler(cmd_info_mul, commands="info_add", state='*')
